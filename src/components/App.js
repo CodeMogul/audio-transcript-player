@@ -1,10 +1,13 @@
 import React, { useState, useCallback } from 'react';
+import { createGlobalStyle } from 'styled-components'
+
 import AudioPlayer from './AudioPlayer';
+import Controls from './Controls';
 import Transcript from './Transcript';
+import TranscriptProgress from './TranscriptProgress';
+
 import transcriptJSON from '../transcript.json';
 import { cleanWordTimings } from '../utils';
-import Controls from './Controls';
-import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -21,6 +24,7 @@ const GlobalStyle = createGlobalStyle`
 `
 
 function App() {
+  const cleanedWordTimings = cleanWordTimings(transcriptJSON.word_timings);
   return (
     <>
     <GlobalStyle />
@@ -28,8 +32,11 @@ function App() {
       src="https://zenprospect-production.s3.amazonaws.com/uploads/phone_call/uploaded_content/59e106639d79684277df770d.wav"
     >
       <Controls />
+      <TranscriptProgress
+        paraTimings={cleanedWordTimings}
+      />
       <Transcript
-        paraTimings={cleanWordTimings(transcriptJSON.word_timings)}
+        paraTimings={cleanedWordTimings}
       />
     </AudioPlayer>
     </>

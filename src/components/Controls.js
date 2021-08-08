@@ -6,7 +6,7 @@ import RightSeekIcon from '../icons/RightSeek';
 import PauseIcon from '../icons/Pause';
 import PlayIcon from '../icons/Play';
 
-const StyledControlsContainer = styled.div`
+const StyledControlsContainer = styled.section`
   height: 30px;
   background: #E8EEF4;
   display: flex;

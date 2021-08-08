@@ -50,12 +50,14 @@ export default function AudioPlayer({
     });
   }, []);
 
+  if (!ready) return null;
+
   const value = {
     currentTime: audioTrack.currentTime,
+    duration: audioTrack.duration,
     playbackRate: audioTrack.playbackRate,
     paused: audioTrack.paused,
     ended: audioTrack.ended,
-    ready,
     play,
     pause,
     seek,

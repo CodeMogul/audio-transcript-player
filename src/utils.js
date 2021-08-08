@@ -11,3 +11,13 @@ export const cleanWordTimings = (paraTimings) => {
     }))
   ));
 }
+
+export const secondsToMinutesStr = (seconds) => {
+  let s = parseInt(seconds);
+  const minutes = Math.floor(s / 60);
+  s = s % 60;
+
+  const secondsStr = ("0" + s).slice(-2);
+  const minutesStr = ("0" + minutes).slice(-2);
+  return `${minutesStr}:${secondsStr}`;
+}

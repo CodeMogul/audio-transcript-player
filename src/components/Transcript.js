@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { inRange } from '../utils';
+import { inRange, secondsToMinutesStr } from '../utils';
 
 import { useAudioPlayer } from './AudioPlayer';
 
@@ -76,8 +76,6 @@ function TranscriptPara({
   wordTimings,
   currentTime,
 }) {
-  const startTimeHeading = ("0" + wordTimings[0].startTime.toFixed(2)).slice(-5);
-
   const paragraph = wordTimings.map((timing, index) => (
     <span
       key={index}
@@ -89,7 +87,7 @@ function TranscriptPara({
 
   return (
     <article className={currentTime ? 'active' : undefined}>
-      <h5>{startTimeHeading}</h5>
+      <h5>{secondsToMinutesStr(wordTimings[0].startTime)}</h5>
       <p>{paragraph}</p>
     </article>
   );
