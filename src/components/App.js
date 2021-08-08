@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import AudioPlayer from './AudioPlayer';
 import Transcript from './Transcript';
-import transcriptJSON from '../../transcript.json';
+import transcriptJSON from '../transcript.json';
 import { cleanWordTimings } from '../utils';
 import Controls from './Controls';
 import { createGlobalStyle } from 'styled-components'
