@@ -7,7 +7,7 @@ import image from '@rollup/plugin-image';
 import replace from '@rollup/plugin-replace';
 import json from '@rollup/plugin-json';
 
-export default {
+const config =  {
   input: "src/index.js",
   output: {
     file: "dist/bundle.js",
@@ -27,7 +27,12 @@ export default {
       babelHelpers: 'bundled',
       presets: ["@babel/preset-react"],
     }),
-    commonjs(),
+    commonjs()
+  ]
+};
+
+if (process.env.NODE_ENV == 'development') {
+  config.plugins.push(
     serve({
       open: true,
       verbose: true,
@@ -36,5 +41,7 @@ export default {
       port: 3000,
     }),
     livereload({ watch: "dist" }),
-  ]
-};
+  )
+}
+
+export default config;

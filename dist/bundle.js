@@ -10297,6 +10297,10 @@
     padding-bottom: 10px;
   }
 
+  article:hover {
+    background: #EDF7FF;
+  }
+
   article h5 {
     font-weight: 600;
     padding-left: 10px;
