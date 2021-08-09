@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { useAudioPlayer } from './AudioPlayer';
@@ -81,6 +82,7 @@ const ProgressContainer = styled.div`
 
 const paraTimingsToTimeRanges = (paraTimings, totalDuration) => {
   const timeRanges = [];
+  if (paraTimings.length === 0) return timeRanges;
 
   if (paraTimings[0][0].startTime > 0) {
     timeRanges.push({
@@ -171,6 +173,7 @@ export default function TranscriptProgress({ paraTimings }) {
             {
               ourTimeRanges.map(range => (
                 <div
+                  key={range.startTime}
                   style={{ flexBasis: `${range.percentage}%` }}
                   className={range.blank ? "" : 'speech'}
                 />
@@ -182,6 +185,7 @@ export default function TranscriptProgress({ paraTimings }) {
             {
               prospectTimeRanges.map(range => (
                 <div
+                  key={range.startTime}
                   style={{ flexBasis: `${range.percentage}%` }}
                   className={range.blank ? "" : 'speech'}
                 />
@@ -197,4 +201,20 @@ export default function TranscriptProgress({ paraTimings }) {
       </ProgressContainer>
     </Container>
   )
+}
+
+TranscriptProgress.propTypes = {
+  paraTimings: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.shape({
+        startTime: PropTypes.number.isRequired,
+        endTime: PropTypes.number.isRequired,
+        word: PropTypes.string.isRequired,
+      }),
+    ),
+  )
+}
+
+TranscriptProgress.defaultProps = {
+  paraTimings: [],
 }

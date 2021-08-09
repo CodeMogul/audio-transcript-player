@@ -143,4 +143,3 @@ Transcript.propTypes = {
 Transcript.defaultProps = {
   paraTimings: [],
 }
-

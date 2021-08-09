@@ -10096,6 +10096,74 @@
 	}
 	var styled = Ye;
 
+	const Form = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px;
+
+  label {
+    width: 10%;
+    margin-right: 12px;
+  }
+
+  input {
+    width: 25%;
+    margin-right: 12px;
+  }
+
+  button {
+    appearance: none;
+    outline: none;
+    border: none;
+    background-color: #1991EB;
+    color: white;
+    padding: 4px 12px;
+    height: 24px;
+    font-size: 12px;
+  }
+`;
+	function UrlInputs({
+	  onSubmit: onSubmitProp,
+	  defaultValues
+	}) {
+	  const [urls, setUrls] = react.exports.useState(defaultValues || {});
+	  const onChange = react.exports.useCallback(e => {
+	    setUrls(prev => ({ ...prev,
+	      [e.target.name]: e.target.value
+	    }));
+	  }, []);
+	  const onSubmit = react.exports.useCallback(e => {
+	    e.preventDefault();
+	    onSubmitProp(urls);
+	  }, [onSubmitProp, urls]);
+	  return /*#__PURE__*/React.createElement(Form, {
+	    onSubmit: onSubmit
+	  }, /*#__PURE__*/React.createElement("label", {
+	    htmlFor: "audioUrl"
+	  }, "Audio URL (https):"), /*#__PURE__*/React.createElement("input", {
+	    type: "url",
+	    name: "audioUrl",
+	    placeholder: "https://example.com/file.wav" // pattern="https://.*"
+	    ,
+	    onChange: onChange,
+	    value: urls.audioUrl,
+	    required: true
+	  }), /*#__PURE__*/React.createElement("label", {
+	    htmlFor: "transcriptUrl"
+	  }, "Transcript URL (https):"), /*#__PURE__*/React.createElement("input", {
+	    type: "text",
+	    name: "transcriptUrl",
+	    placeholder: "https://example.com/file.json" // pattern="https://.*"
+	    ,
+	    onChange: onChange,
+	    value: urls.transcriptUrl,
+	    required: true
+	  }), /*#__PURE__*/React.createElement("button", {
+	    type: "submit"
+	  }, "OK"));
+	}
+
 	var propTypes = {exports: {}};
 
 	/**
@@ -10188,10 +10256,17 @@
 	  children
 	}) {
 	  if (typeof src !== 'string') throw new Error('Invalid `src` provides');
-	  const audioRef = react.exports.useRef(new Audio(src));
+	  const audioRef = react.exports.useRef(null);
 	  const intervalRef = react.exports.useRef(null);
 	  const [ready, setReady] = react.exports.useState(false);
 	  const [renderFlag, setRenderFlag] = react.exports.useState(false);
+	  react.exports.useEffect(() => {
+	    setReady(false);
+	    audioRef.current = new Audio(src);
+	    audioRef.current.addEventListener('loadeddata', function () {
+	      setReady(true);
+	    });
+	  }, [src]);
 	  const audioTrack = audioRef.current;
 	  const triggerRerender = react.exports.useCallback(() => setRenderFlag(prev => !prev));
 	  const play = react.exports.useCallback(() => {
@@ -10215,11 +10290,6 @@
 	    audioTrack.playbackRate = parseFloat(rate);
 	    triggerRerender();
 	  }, [audioTrack]);
-	  react.exports.useEffect(() => {
-	    audioTrack.addEventListener('loadeddata', function () {
-	      setReady(true);
-	    });
-	  }, []);
 	  if (!ready) return null;
 	  const value = {
 	    currentTime: audioTrack.currentTime,
@@ -10577,6 +10647,7 @@
 
 	const paraTimingsToTimeRanges = (paraTimings, totalDuration) => {
 	  const timeRanges = [];
+	  if (paraTimings.length === 0) return timeRanges;
 
 	  if (paraTimings[0][0].startTime > 0) {
 	    timeRanges.push({
@@ -10656,6 +10727,7 @@
 	  }, secondsToMinutesStr(audioPlayer.currentTime)), /*#__PURE__*/React.createElement("span", null, " / ", secondsToMinutesStr(audioPlayer.duration))), /*#__PURE__*/React.createElement(ProgressContainer, null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", null, "You: ", ourTimeRanges.reduce((sum, x) => sum + (x.blank ? 0 : x.percentage), 0), "%"), /*#__PURE__*/React.createElement("h3", null, "Prospect: ", prospectTimeRanges.reduce((sum, x) => sum + (x.blank ? 0 : x.percentage), 0), "% ")), /*#__PURE__*/React.createElement("div", {
 	    onClick: seek
 	  }, /*#__PURE__*/React.createElement(TimeRange, null, ourTimeRanges.map(range => /*#__PURE__*/React.createElement("div", {
+	    key: range.startTime,
 	    style: {
 	      flexBasis: `${range.percentage}%`
 	    },
@@ -10663,6 +10735,7 @@
 	  }))), /*#__PURE__*/React.createElement(TimeRange, {
 	    bgColor: "#1991EB"
 	  }, prospectTimeRanges.map(range => /*#__PURE__*/React.createElement("div", {
+	    key: range.startTime,
 	    style: {
 	      flexBasis: `${range.percentage}%`
 	    },
@@ -10674,191 +10747,39 @@
 	    }
 	  }))));
 	}
-
-	var transcript_text = [
-		"This is Brian Isaacson with Guardian mortgage company at the sound of the tone, please leave your name phone number and a brief message, and I will return your call. Thank you.",
-		"Sounds good"
-	];
-	var word_timings = [
-		[
-			{
-				startTime: "2.400s",
-				endTime: "2.800s",
-				word: "This"
-			},
-			{
-				startTime: "2.800s",
-				endTime: "3s",
-				word: "is"
-			},
-			{
-				startTime: "3s",
-				endTime: "3.400s",
-				word: "Brian"
-			},
-			{
-				startTime: "3.400s",
-				endTime: "3.900s",
-				word: "Isaacson"
-			},
-			{
-				startTime: "3.900s",
-				endTime: "4.100s",
-				word: "with"
-			},
-			{
-				startTime: "4.100s",
-				endTime: "4.500s",
-				word: "Guardian"
-			},
-			{
-				startTime: "4.500s",
-				endTime: "4.500s",
-				word: "mortgage"
-			},
-			{
-				startTime: "4.500s",
-				endTime: "5.400s",
-				word: "company"
-			},
-			{
-				startTime: "5.400s",
-				endTime: "5.700s",
-				word: "at"
-			},
-			{
-				startTime: "5.700s",
-				endTime: "5.900s",
-				word: "the"
-			},
-			{
-				startTime: "5.900s",
-				endTime: "6.100s",
-				word: "sound"
-			},
-			{
-				startTime: "6.100s",
-				endTime: "6.200s",
-				word: "of"
-			},
-			{
-				startTime: "6.200s",
-				endTime: "6.300s",
-				word: "the"
-			},
-			{
-				startTime: "6.300s",
-				endTime: "6.500s",
-				word: "tone,"
-			},
-			{
-				startTime: "6.500s",
-				endTime: "6.900s",
-				word: "please"
-			},
-			{
-				startTime: "6.900s",
-				endTime: "7.200s",
-				word: "leave"
-			},
-			{
-				startTime: "7.200s",
-				endTime: "7.300s",
-				word: "your"
-			},
-			{
-				startTime: "7.300s",
-				endTime: "7.600s",
-				word: "name"
-			},
-			{
-				startTime: "7.600s",
-				endTime: "8.200s",
-				word: "phone"
-			},
-			{
-				startTime: "8.200s",
-				endTime: "8.300s",
-				word: "number"
-			},
-			{
-				startTime: "8.300s",
-				endTime: "8.600s",
-				word: "and"
-			},
-			{
-				startTime: "8.600s",
-				endTime: "8.700s",
-				word: "a"
-			},
-			{
-				startTime: "8.700s",
-				endTime: "8.800s",
-				word: "brief"
-			},
-			{
-				startTime: "8.800s",
-				endTime: "9s",
-				word: "message,"
-			},
-			{
-				startTime: "9s",
-				endTime: "9.600s",
-				word: "and"
-			},
-			{
-				startTime: "9.600s",
-				endTime: "10s",
-				word: "I"
-			},
-			{
-				startTime: "10s",
-				endTime: "10s",
-				word: "will"
-			},
-			{
-				startTime: "10s",
-				endTime: "10.400s",
-				word: "return"
-			},
-			{
-				startTime: "10.400s",
-				endTime: "10.600s",
-				word: "your"
-			},
-			{
-				startTime: "10.600s",
-				endTime: "10.900s",
-				word: "call."
-			},
-			{
-				startTime: "10.900s",
-				endTime: "11.400s",
-				word: "Thank"
-			},
-			{
-				startTime: "11.400s",
-				endTime: "11.500s",
-				word: "you."
-			}
-		],
-		[
-			{
-				startTime: "12.0s",
-				endTime: "12.800s",
-				word: "Sounds"
-			},
-			{
-				startTime: "12.800s",
-				endTime: "12.9s",
-				word: "good"
-			}
-		]
-	];
-	var transcriptJSON = {
-		transcript_text: transcript_text,
-		word_timings: word_timings
+	TranscriptProgress.propTypes = {
+	  paraTimings: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
+	    startTime: PropTypes.number.isRequired,
+	    endTime: PropTypes.number.isRequired,
+	    word: PropTypes.string.isRequired
+	  })))
 	};
+	TranscriptProgress.defaultProps = {
+	  paraTimings: []
+	};
+
+	const defaultUrls = {
+	  audioUrl: 'https://zenprospect-production.s3.amazonaws.com/uploads/phone_call/uploaded_content/59e106639d79684277df770d.wav',
+	  transcriptUrl: 'transcript.json'
+	};
+	function AppContainer() {
+	  const [urls, setUrls] = react.exports.useState(defaultUrls);
+	  const [paraTimings, setParaTimings] = react.exports.useState([]);
+	  react.exports.useEffect(() => {
+	    if (!urls.transcriptUrl) return;
+	    fetch(urls.transcriptUrl).then(res => res.json()).then(data => setParaTimings(cleanWordTimings(data.word_timings)));
+	  }, [urls.transcriptUrl]);
+	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(UrlInputs, {
+	    onSubmit: setUrls,
+	    defaultValues: defaultUrls
+	  }), /*#__PURE__*/React.createElement(AudioPlayer, {
+	    src: urls.audioUrl
+	  }, /*#__PURE__*/React.createElement(Controls, null), /*#__PURE__*/React.createElement(TranscriptProgress, {
+	    paraTimings: paraTimings
+	  }), /*#__PURE__*/React.createElement(Transcript, {
+	    paraTimings: paraTimings
+	  })));
+	}
 
 	const GlobalStyle = He`
   body {
@@ -10875,14 +10796,7 @@
 `;
 
 	function App() {
-	  const cleanedWordTimings = cleanWordTimings(transcriptJSON.word_timings);
-	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GlobalStyle, null), /*#__PURE__*/React.createElement(AudioPlayer, {
-	    src: "https://zenprospect-production.s3.amazonaws.com/uploads/phone_call/uploaded_content/59e106639d79684277df770d.wav"
-	  }, /*#__PURE__*/React.createElement(Controls, null), /*#__PURE__*/React.createElement(TranscriptProgress, {
-	    paraTimings: cleanedWordTimings
-	  }), /*#__PURE__*/React.createElement(Transcript, {
-	    paraTimings: cleanedWordTimings
-	  })));
+	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(GlobalStyle, null), /*#__PURE__*/React.createElement(AppContainer, null));
 	}
 
 	ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.querySelector('#root'));

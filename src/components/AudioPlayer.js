@@ -9,11 +9,19 @@ export default function AudioPlayer({
 }) {
   if (typeof src !== 'string') throw new Error('Invalid `src` provides');
 
-  const audioRef = useRef(new Audio(src));
+  const audioRef = useRef(null);
   const intervalRef = useRef(null);
 
   const [ready, setReady] = useState(false);
   const [renderFlag, setRenderFlag] = useState(false);
+
+  useEffect(() => {
+    setReady(false);
+    audioRef.current = new Audio(src);
+    audioRef.current.addEventListener('loadeddata', function () {
+      setReady(true);
+    });
+  }, [src]);
 
   const audioTrack = audioRef.current;
 
@@ -43,12 +51,6 @@ export default function AudioPlayer({
     audioTrack.playbackRate = parseFloat(rate);
     triggerRerender();
   }, [audioTrack]);
-
-  useEffect(() => {
-    audioTrack.addEventListener('loadeddata', function () {
-      setReady(true);
-    });
-  }, []);
 
   if (!ready) return null;
 
