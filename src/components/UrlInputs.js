@@ -69,7 +69,7 @@ export default function UrlInputs({ onSubmit: onSubmitProp, defaultValues }) {
         required
       />
 
-      <button type="submit">OK</button>
+      <button type="submit">Update Urls</button>
     </Form>
   )
 }

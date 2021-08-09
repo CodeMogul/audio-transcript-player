@@ -10161,7 +10161,7 @@
 	    required: true
 	  }), /*#__PURE__*/React.createElement("button", {
 	    type: "submit"
-	  }, "OK"));
+	  }, "Update Urls"));
 	}
 
 	var propTypes = {exports: {}};
@@ -10641,7 +10641,10 @@
     top: 0;
     bottom: 0;
     left: 0;
-    background: rgba(205, 229, 248, 0.3);
+    background: rgba(205, 229, 248, 0.4);
+    border-right: 1px solid rgba(205, 229, 248, 0.8);
+    box-sizing: border-box;
+    transition: all linear;
   }
 `;
 
